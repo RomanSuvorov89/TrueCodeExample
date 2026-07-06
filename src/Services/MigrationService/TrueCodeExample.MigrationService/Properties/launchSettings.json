@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "TrueCodeExample.MigrationService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "ConnectionStrings__UsersDb": "Host=localhost;Port=5432;Database=truecode_users;Username=postgres;Password=postgres",
+        "ConnectionStrings__FinanceDb": "Host=localhost;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres"
+      }
+    }
+  }
+}

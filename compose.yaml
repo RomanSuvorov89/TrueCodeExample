@@ -1,7 +1,92 @@
-﻿services:
-  truecodeexample.api:
-    image: truecodeexample.api
+﻿x-common-jwt: &common-jwt
+  Jwt__Issuer: TrueCode
+  Jwt__Audience: TrueCodeClients
+  Jwt__AccessTokenMinutes: 15
+  Jwt__RefreshTokenDays: 7
+  Jwt__SecretKey: docker-development-secret-key-change-me-please-32+
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  migration-service:
     build:
       context: .
-      dockerfile: TrueCodeExample.Api/Dockerfile
+      dockerfile: src/Services/MigrationService/TrueCodeExample.MigrationService/Dockerfile
+    environment:
+      DOTNET_ENVIRONMENT: Production
+      ConnectionStrings__UsersDb: Host=postgres;Port=5432;Database=truecode_users;Username=postgres;Password=postgres
+      ConnectionStrings__FinanceDb: Host=postgres;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
 
+  users-api:
+    build:
+      context: .
+      dockerfile: src/Services/Users/TrueCodeExample.Users.Api/Dockerfile
+    ports:
+      - "5100:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__UsersDb: Host=postgres;Port=5432;Database=truecode_users;Username=postgres;Password=postgres
+      <<: *common-jwt
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migration-service:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  finance-api:
+    build:
+      context: .
+      dockerfile: src/Services/Finance/TrueCodeExample.Finance.Api/Dockerfile
+    ports:
+      - "5200:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__FinanceDb: Host=postgres;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres
+      <<: *common-jwt
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migration-service:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  currency-worker:
+    build:
+      context: .
+      dockerfile: src/Services/CurrencyWorker/TrueCodeExample.CurrencyWorker/Dockerfile
+    environment:
+      DOTNET_ENVIRONMENT: Production
+      ConnectionStrings__FinanceDb: Host=postgres;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres
+      CurrencyWorker__SyncIntervalMinutes: 60
+      CurrencyWorker__CbrBaseUrl: http://www.cbr.ru
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migration-service:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
