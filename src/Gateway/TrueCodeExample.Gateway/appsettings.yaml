@@ -1,0 +1,28 @@
+Logging:
+  LogLevel:
+    Default: Information
+    Microsoft.AspNetCore: Warning
+
+AllowedHosts: "*"
+
+ReverseProxy:
+  Routes:
+    users:
+      ClusterId: users
+      Match:
+        Path: "/users/{**catch-all}"
+      Transforms:
+        - PathRemovePrefix: "/users"
+    finance:
+      ClusterId: finance
+      Match:
+        Path: "/finance/{**catch-all}"
+  Clusters:
+    users:
+      Destinations:
+        users-api:
+          Address: http://users-api:8080/
+    finance:
+      Destinations:
+        finance-api:
+          Address: http://finance-api:8080/

@@ -1,0 +1,15 @@
+Logging:
+  LogLevel:
+    Default: Debug
+    Microsoft.AspNetCore: Information
+
+ReverseProxy:
+  Clusters:
+    users:
+      Destinations:
+        users-api:
+          Address: http://localhost:5100/
+    finance:
+      Destinations:
+        finance-api:
+          Address: http://localhost:5200/
