@@ -1,0 +1,90 @@
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace TrueCodeExample.Finance.DataAccess.Migrations;
+
+[DbContext(typeof(FinanceDbContext))]
+partial class FinanceDbContextModelSnapshot : ModelSnapshot
+{
+    protected override void BuildModel(ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .HasAnnotation("ProductVersion", "8.0.11")
+            .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+        NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+        modelBuilder.Entity("TrueCodeExample.Finance.Domain.Entities.Currency", b =>
+        {
+            b.Property<Guid>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("uuid");
+
+            b.Property<string>("CharCode")
+                .IsRequired()
+                .HasMaxLength(3)
+                .HasColumnType("character varying(3)");
+
+            b.Property<string>("Name")
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<int>("Nominal")
+                .HasColumnType("integer");
+
+            b.Property<string>("NumCode")
+                .IsRequired()
+                .HasMaxLength(3)
+                .HasColumnType("character varying(3)");
+
+            b.Property<DateTime>("UpdatedAtUtc")
+                .HasColumnType("timestamp with time zone");
+
+            b.Property<decimal>("Value")
+                .HasColumnType("numeric(18,4)");
+
+            b.HasKey("Id");
+
+            b.HasIndex("CharCode")
+                .IsUnique();
+
+            b.ToTable("currencies");
+        });
+
+        modelBuilder.Entity("TrueCodeExample.Finance.Domain.Entities.FavoriteCurrency", b =>
+        {
+            b.Property<Guid>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("uuid");
+
+            b.Property<Guid>("CurrencyId")
+                .HasColumnType("uuid");
+
+            b.Property<Guid>("UserId")
+                .HasColumnType("uuid");
+
+            b.HasKey("Id");
+
+            b.HasIndex("CurrencyId");
+
+            b.HasIndex("UserId", "CurrencyId")
+                .IsUnique();
+
+            b.ToTable("favorite_currencies");
+        });
+
+        modelBuilder.Entity("TrueCodeExample.Finance.Domain.Entities.FavoriteCurrency", b =>
+        {
+            b.HasOne("TrueCodeExample.Finance.Domain.Entities.Currency", null)
+                .WithMany()
+                .HasForeignKey("CurrencyId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+        });
+    }
+}

@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueCodeExample.Finance.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueCodeExample.Finance.Application", "src\Services\Finance\TrueCodeExample.Finance.Application\TrueCodeExample.Finance.Application.csproj", "{A1000000-0000-0000-0000-000000000008}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueCodeExample.Finance.DataAccess", "src\Services\Finance\TrueCodeExample.Finance.DataAccess\TrueCodeExample.Finance.DataAccess.csproj", "{A1000000-0000-0000-0000-000000000009}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B0000000-0000-0000-0000-000000000001}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B0000000-0000-0000-0000-000000000002}"
@@ -70,6 +72,10 @@ Global
 		{A1000000-0000-0000-0000-000000000008}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1000000-0000-0000-0000-000000000008}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1000000-0000-0000-0000-000000000008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1000000-0000-0000-0000-000000000009}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1000000-0000-0000-0000-000000000009}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1000000-0000-0000-0000-000000000009}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1000000-0000-0000-0000-000000000009}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,5 +92,6 @@ Global
 		{B0000000-0000-0000-0000-000000000004} = {B0000000-0000-0000-0000-000000000002}
 		{A1000000-0000-0000-0000-000000000007} = {B0000000-0000-0000-0000-000000000004}
 		{A1000000-0000-0000-0000-000000000008} = {B0000000-0000-0000-0000-000000000004}
+		{A1000000-0000-0000-0000-000000000009} = {B0000000-0000-0000-0000-000000000004}
 	EndGlobalSection
 EndGlobal
