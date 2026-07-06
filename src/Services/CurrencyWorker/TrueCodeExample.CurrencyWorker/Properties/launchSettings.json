@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "TrueCodeExample.CurrencyWorker": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "ConnectionStrings__FinanceDb": "Host=localhost;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres"
+      }
+    }
+  }
+}

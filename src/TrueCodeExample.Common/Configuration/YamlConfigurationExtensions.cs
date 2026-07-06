@@ -8,17 +8,24 @@ public static class YamlConfigurationExtensions
 {
     public static WebApplicationBuilder AddTrueCodeYamlConfiguration(this WebApplicationBuilder builder)
     {
-        builder.Configuration.Sources.Clear();
+        ConfigureYaml(builder.Configuration, builder.Environment.ContentRootPath, builder.Environment.EnvironmentName);
+        return builder;
+    }
 
-        var contentRoot = builder.Environment.ContentRootPath;
-        var environment = builder.Environment.EnvironmentName;
+    public static HostApplicationBuilder AddTrueCodeYamlConfiguration(this HostApplicationBuilder builder)
+    {
+        ConfigureYaml(builder.Configuration, builder.Environment.ContentRootPath, builder.Environment.EnvironmentName);
+        return builder;
+    }
 
-        builder.Configuration
+    private static void ConfigureYaml(IConfigurationBuilder configuration, string contentRoot, string environment)
+    {
+        configuration.Sources.Clear();
+
+        configuration
             .SetBasePath(contentRoot)
             .AddYamlFile("appsettings.yaml", optional: false, reloadOnChange: true)
             .AddYamlFile($"appsettings.{environment}.yaml", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
-
-        return builder;
     }
 }
