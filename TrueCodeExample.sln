@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueCodeExample.Users.DataA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueCodeExample.Users.Infrastructure", "src\Services\Users\TrueCodeExample.Users.Infrastructure\TrueCodeExample.Users.Infrastructure.csproj", "{A1000000-0000-0000-0000-000000000005}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueCodeExample.Users.Api", "src\Services\Users\TrueCodeExample.Users.Api\TrueCodeExample.Users.Api.csproj", "{A1000000-0000-0000-0000-000000000006}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B0000000-0000-0000-0000-000000000001}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B0000000-0000-0000-0000-000000000002}"
@@ -50,6 +52,10 @@ Global
 		{A1000000-0000-0000-0000-000000000005}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1000000-0000-0000-0000-000000000005}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1000000-0000-0000-0000-000000000005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1000000-0000-0000-0000-000000000006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1000000-0000-0000-0000-000000000006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1000000-0000-0000-0000-000000000006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1000000-0000-0000-0000-000000000006}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +68,6 @@ Global
 		{A1000000-0000-0000-0000-000000000003} = {B0000000-0000-0000-0000-000000000003}
 		{A1000000-0000-0000-0000-000000000004} = {B0000000-0000-0000-0000-000000000003}
 		{A1000000-0000-0000-0000-000000000005} = {B0000000-0000-0000-0000-000000000003}
+		{A1000000-0000-0000-0000-000000000006} = {B0000000-0000-0000-0000-000000000003}
 	EndGlobalSection
 EndGlobal
