@@ -1,6 +1,0 @@
-@TrueCodeExample.Api_HostAddress = http://localhost:5255
-
-GET {{TrueCodeExample.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

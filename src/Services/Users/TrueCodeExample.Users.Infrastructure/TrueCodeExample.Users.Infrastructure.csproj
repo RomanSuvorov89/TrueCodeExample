@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\TrueCodeExample.Common\TrueCodeExample.Common.csproj" />
+        <ProjectReference Include="..\TrueCodeExample.Users.Application\TrueCodeExample.Users.Application.csproj" />
+        <ProjectReference Include="..\TrueCodeExample.Users.Domain\TrueCodeExample.Users.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
