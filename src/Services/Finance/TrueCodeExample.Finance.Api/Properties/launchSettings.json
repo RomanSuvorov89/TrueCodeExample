@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5200",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__FinanceDb": "Host=localhost;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres",
+        "Jwt__SecretKey": "local-development-only-secret-key-change-me-please-32+"
+      }
+    }
+  }
+}

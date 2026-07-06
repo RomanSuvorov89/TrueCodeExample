@@ -1,8 +1,9 @@
-using TrueCodeExample.Users.Application.Abstractions;
+using TrueCodeExample.Users.Application.Features.Login;
+using TrueCodeExample.Users.Application.Features.Register;
 
 namespace TrueCodeExample.Users.Infrastructure.Security;
 
-public sealed class PasswordHasher : IPasswordHasher
+public sealed class PasswordHasher : IRegisterPasswordHasher, ILoginPasswordVerifier
 {
     public string Hash(string password) => BCrypt.Net.BCrypt.HashPassword(password);
 

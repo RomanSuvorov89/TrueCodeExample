@@ -18,7 +18,7 @@ partial class FinanceDbContextModelSnapshot : ModelSnapshot
 
         NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-        modelBuilder.Entity("TrueCodeExample.Finance.Domain.Entities.Currency", b =>
+        modelBuilder.Entity("TrueCodeExample.Finance.DataAccess.Entities.CurrencyEntity", b =>
         {
             b.Property<Guid>("Id")
                 .ValueGeneratedOnAdd()
@@ -56,7 +56,7 @@ partial class FinanceDbContextModelSnapshot : ModelSnapshot
             b.ToTable("currencies");
         });
 
-        modelBuilder.Entity("TrueCodeExample.Finance.Domain.Entities.FavoriteCurrency", b =>
+        modelBuilder.Entity("TrueCodeExample.Finance.DataAccess.Entities.FavoriteCurrencyEntity", b =>
         {
             b.Property<Guid>("Id")
                 .ValueGeneratedOnAdd()
@@ -78,9 +78,9 @@ partial class FinanceDbContextModelSnapshot : ModelSnapshot
             b.ToTable("favorite_currencies");
         });
 
-        modelBuilder.Entity("TrueCodeExample.Finance.Domain.Entities.FavoriteCurrency", b =>
+        modelBuilder.Entity("TrueCodeExample.Finance.DataAccess.Entities.FavoriteCurrencyEntity", b =>
         {
-            b.HasOne("TrueCodeExample.Finance.Domain.Entities.Currency", null)
+            b.HasOne("TrueCodeExample.Finance.DataAccess.Entities.CurrencyEntity", null)
                 .WithMany()
                 .HasForeignKey("CurrencyId")
                 .OnDelete(DeleteBehavior.Cascade)

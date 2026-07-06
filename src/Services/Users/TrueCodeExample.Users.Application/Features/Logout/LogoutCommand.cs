@@ -2,4 +2,4 @@ using Mediator;
 
 namespace TrueCodeExample.Users.Application.Features.Logout;
 
-public sealed record LogoutCommand(string Jti, DateTime ExpiresAtUtc) : IRequest;
+public sealed record LogoutCommand(Guid UserId) : IRequest;

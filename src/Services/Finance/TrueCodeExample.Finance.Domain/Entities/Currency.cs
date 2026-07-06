@@ -10,10 +10,6 @@ public class Currency
     public decimal Value { get; private set; }
     public DateTime UpdatedAtUtc { get; private set; }
 
-    private Currency()
-    {
-    }
-
     public Currency(string charCode, string numCode, string name, int nominal, decimal value, DateTime updatedAtUtc)
     {
         Id = Guid.NewGuid();
@@ -24,6 +20,20 @@ public class Currency
         Value = value;
         UpdatedAtUtc = updatedAtUtc;
     }
+
+    private Currency(Guid id, string charCode, string numCode, string name, int nominal, decimal value, DateTime updatedAtUtc)
+    {
+        Id = id;
+        CharCode = charCode;
+        NumCode = numCode;
+        Name = name;
+        Nominal = nominal;
+        Value = value;
+        UpdatedAtUtc = updatedAtUtc;
+    }
+
+    public static Currency Restore(Guid id, string charCode, string numCode, string name, int nominal, decimal value, DateTime updatedAtUtc)
+        => new(id, charCode, numCode, name, nominal, value, updatedAtUtc);
 
     public void Update(string numCode, string name, int nominal, decimal value, DateTime updatedAtUtc)
     {

@@ -1,5 +1,5 @@
 using Mediator;
-using TrueCodeExample.Users.Application.Contracts;
+using TrueCodeExample.Users.Application.DTO;
 
 namespace TrueCodeExample.Users.Application.Features.Login;
 

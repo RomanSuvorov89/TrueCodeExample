@@ -1,5 +1,5 @@
 using Mediator;
-using TrueCodeExample.Finance.Application.Contracts;
+using TrueCodeExample.Finance.Application.Features.GetCurrencies;
 
 namespace TrueCodeExample.Finance.Application.Features.GetRates;
 

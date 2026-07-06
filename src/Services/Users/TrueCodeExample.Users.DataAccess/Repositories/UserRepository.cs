@@ -1,27 +1,33 @@
 using Microsoft.EntityFrameworkCore;
-using TrueCodeExample.Users.Application.Abstractions;
+using TrueCodeExample.Users.Application.Features.Login;
+using TrueCodeExample.Users.Application.Features.Refresh;
+using TrueCodeExample.Users.Application.Features.Register;
+using TrueCodeExample.Users.DataAccess.Entities;
 using TrueCodeExample.Users.Domain.Entities;
 
 namespace TrueCodeExample.Users.DataAccess.Repositories;
 
-public sealed class UserRepository : IUserRepository
+public sealed class UserRepository(UsersDbContext dbContext)
+    : IRegisterUserStore, ILoginUserStore, IRefreshUserStore
 {
-    private readonly UsersDbContext _dbContext;
+    public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken)
+        => dbContext.Users.AnyAsync(x => x.Name == name, cancellationToken);
 
-    public UserRepository(UsersDbContext dbContext)
+    public async Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken)
     {
-        _dbContext = dbContext;
+        var entity = await dbContext.Users.SingleOrDefaultAsync(x => x.Name == name, cancellationToken);
+        return entity?.ToDomain();
     }
 
-    public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken)
-        => _dbContext.Users.AnyAsync(x => x.Name == name, cancellationToken);
-
-    public Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken)
-        => _dbContext.Users.SingleOrDefaultAsync(x => x.Name == name, cancellationToken);
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var entity = await dbContext.Users.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return entity?.ToDomain();
+    }
 
     public async Task AddAsync(User user, CancellationToken cancellationToken)
-        => await _dbContext.Users.AddAsync(user, cancellationToken);
+        => await dbContext.Users.AddAsync(user.ToEntity(), cancellationToken);
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)
-        => _dbContext.SaveChangesAsync(cancellationToken);
+        => dbContext.SaveChangesAsync(cancellationToken);
 }

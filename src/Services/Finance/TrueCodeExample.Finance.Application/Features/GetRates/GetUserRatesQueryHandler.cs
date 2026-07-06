@@ -1,12 +1,11 @@
 using Mediator;
-using TrueCodeExample.Finance.Application.Abstractions;
-using TrueCodeExample.Finance.Application.Contracts;
+using TrueCodeExample.Finance.Application.Features.GetCurrencies;
 
 namespace TrueCodeExample.Finance.Application.Features.GetRates;
 
 public sealed class GetUserRatesQueryHandler(
-    IFavoriteCurrencyRepository favorites,
-    ICurrencyRepository currencies)
+    IFavoriteCurrencyByUserReader favorites,
+    ICurrencyByIdsReader currencies)
     : IRequestHandler<GetUserRatesQuery, IReadOnlyList<CurrencyResponse>>
 {
     public async ValueTask<IReadOnlyList<CurrencyResponse>> Handle(GetUserRatesQuery request, CancellationToken cancellationToken)

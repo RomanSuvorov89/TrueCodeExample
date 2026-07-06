@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TrueCodeExample.Finance.Domain.Entities;
+using TrueCodeExample.Finance.DataAccess.Entities;
 
 namespace TrueCodeExample.Finance.DataAccess.Configurations;
 
-public sealed class FavoriteCurrencyConfiguration : IEntityTypeConfiguration<FavoriteCurrency>
+public sealed class FavoriteCurrencyConfiguration : IEntityTypeConfiguration<FavoriteCurrencyEntity>
 {
-    public void Configure(EntityTypeBuilder<FavoriteCurrency> builder)
+    public void Configure(EntityTypeBuilder<FavoriteCurrencyEntity> builder)
     {
         builder.ToTable("favorite_currencies");
 
@@ -21,7 +21,7 @@ public sealed class FavoriteCurrencyConfiguration : IEntityTypeConfiguration<Fav
         builder.HasIndex(x => new { x.UserId, x.CurrencyId })
             .IsUnique();
 
-        builder.HasOne<Currency>()
+        builder.HasOne<CurrencyEntity>()
             .WithMany()
             .HasForeignKey(x => x.CurrencyId)
             .OnDelete(DeleteBehavior.Cascade);

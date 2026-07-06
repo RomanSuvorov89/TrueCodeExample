@@ -1,12 +1,12 @@
 using Mediator;
-using TrueCodeExample.Finance.Application.Abstractions;
+using TrueCodeExample.Finance.Application.Features.AddFavorite;
 using TrueCodeExample.Finance.Domain.Exceptions;
 
 namespace TrueCodeExample.Finance.Application.Features.RemoveFavorite;
 
 public sealed class RemoveFavoriteCurrencyCommandHandler(
-    ICurrencyRepository currencies,
-    IFavoriteCurrencyRepository favorites)
+    ICurrencyByCharCodeReader currencies,
+    IFavoriteCurrencyRemover favorites)
     : IRequestHandler<RemoveFavoriteCurrencyCommand>
 {
     public async ValueTask<Unit> Handle(RemoveFavoriteCurrencyCommand request, CancellationToken cancellationToken)

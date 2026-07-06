@@ -1,10 +1,10 @@
 using Mediator;
-using TrueCodeExample.Finance.Application.Abstractions;
 using TrueCodeExample.Finance.Domain.Entities;
+using TrueCodeExample.Finance.Domain.Exceptions;
 
 namespace TrueCodeExample.Finance.Application.Features.UpsertCurrencies;
 
-public sealed class UpsertCurrenciesCommandHandler(ICurrencyRepository currencies)
+public sealed class UpsertCurrenciesCommandHandler(ICurrencyUpsertStore currencies)
     : IRequestHandler<UpsertCurrenciesCommand>
 {
     public async ValueTask<Unit> Handle(UpsertCurrenciesCommand request, CancellationToken cancellationToken)
@@ -19,6 +19,7 @@ public sealed class UpsertCurrenciesCommandHandler(ICurrencyRepository currencie
             if (existing.TryGetValue(data.CharCode, out var currency))
             {
                 currency.Update(data.NumCode, data.Name, data.Nominal, data.Value, data.UpdatedAtUtc);
+                await currencies.UpdateAsync(currency, cancellationToken);
             }
             else
             {

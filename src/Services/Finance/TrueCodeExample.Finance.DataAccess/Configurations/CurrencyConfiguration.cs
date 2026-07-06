@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TrueCodeExample.Finance.Domain.Entities;
+using TrueCodeExample.Finance.DataAccess.Entities;
 
 namespace TrueCodeExample.Finance.DataAccess.Configurations;
 
-public sealed class CurrencyConfiguration : IEntityTypeConfiguration<Currency>
+public sealed class CurrencyConfiguration : IEntityTypeConfiguration<CurrencyEntity>
 {
-    public void Configure(EntityTypeBuilder<Currency> builder)
+    public void Configure(EntityTypeBuilder<CurrencyEntity> builder)
     {
         builder.ToTable("currencies");
 

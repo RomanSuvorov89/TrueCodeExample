@@ -1,13 +1,20 @@
 using Mediator;
-using TrueCodeExample.Users.Application.Abstractions;
 
 namespace TrueCodeExample.Users.Application.Features.Logout;
 
-public sealed class LogoutCommandHandler(ITokenRevocationStore revocationStore) : IRequestHandler<LogoutCommand>
+public sealed class LogoutCommandHandler(ILogoutRefreshTokenStore refreshTokens) : IRequestHandler<LogoutCommand>
 {
     public async ValueTask<Unit> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
-        await revocationStore.RevokeAsync(request.Jti, request.ExpiresAtUtc, cancellationToken);
+        var tokens = await refreshTokens.GetActiveByUserAsync(request.UserId, cancellationToken);
+
+        foreach (var token in tokens)
+        {
+            token.Revoke();
+            await refreshTokens.UpdateAsync(token, cancellationToken);
+        }
+
+        await refreshTokens.SaveChangesAsync(cancellationToken);
         return Unit.Value;
     }
 }

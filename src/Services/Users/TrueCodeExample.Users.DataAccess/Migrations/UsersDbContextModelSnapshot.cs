@@ -18,21 +18,40 @@ partial class UsersDbContextModelSnapshot : ModelSnapshot
 
         NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-        modelBuilder.Entity("TrueCodeExample.Users.Domain.Entities.RevokedToken", b =>
+        modelBuilder.Entity("TrueCodeExample.Users.DataAccess.Entities.RefreshTokenEntity", b =>
         {
-            b.Property<string>("Jti")
-                .HasMaxLength(64)
-                .HasColumnType("character varying(64)");
+            b.Property<Guid>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("uuid");
+
+            b.Property<DateTime>("CreatedAtUtc")
+                .HasColumnType("timestamp with time zone");
 
             b.Property<DateTime>("ExpiresAtUtc")
                 .HasColumnType("timestamp with time zone");
 
-            b.HasKey("Jti");
+            b.Property<DateTime?>("RevokedAtUtc")
+                .HasColumnType("timestamp with time zone");
 
-            b.ToTable("revoked_tokens");
+            b.Property<string>("TokenHash")
+                .IsRequired()
+                .HasMaxLength(128)
+                .HasColumnType("character varying(128)");
+
+            b.Property<Guid>("UserId")
+                .HasColumnType("uuid");
+
+            b.HasKey("Id");
+
+            b.HasIndex("TokenHash")
+                .IsUnique();
+
+            b.HasIndex("UserId");
+
+            b.ToTable("refresh_tokens");
         });
 
-        modelBuilder.Entity("TrueCodeExample.Users.Domain.Entities.User", b =>
+        modelBuilder.Entity("TrueCodeExample.Users.DataAccess.Entities.UserEntity", b =>
         {
             b.Property<Guid>("Id")
                 .ValueGeneratedOnAdd()
@@ -53,6 +72,15 @@ partial class UsersDbContextModelSnapshot : ModelSnapshot
                 .IsUnique();
 
             b.ToTable("users");
+        });
+
+        modelBuilder.Entity("TrueCodeExample.Users.DataAccess.Entities.RefreshTokenEntity", b =>
+        {
+            b.HasOne("TrueCodeExample.Users.DataAccess.Entities.UserEntity", null)
+                .WithMany()
+                .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
         });
     }
 }

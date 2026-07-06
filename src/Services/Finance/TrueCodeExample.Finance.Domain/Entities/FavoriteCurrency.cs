@@ -6,14 +6,20 @@ public class FavoriteCurrency
     public Guid UserId { get; private set; }
     public Guid CurrencyId { get; private set; }
 
-    private FavoriteCurrency()
-    {
-    }
-
     public FavoriteCurrency(Guid userId, Guid currencyId)
     {
         Id = Guid.NewGuid();
         UserId = userId;
         CurrencyId = currencyId;
     }
+
+    private FavoriteCurrency(Guid id, Guid userId, Guid currencyId)
+    {
+        Id = id;
+        UserId = userId;
+        CurrencyId = currencyId;
+    }
+
+    public static FavoriteCurrency Restore(Guid id, Guid userId, Guid currencyId)
+        => new(id, userId, currencyId);
 }

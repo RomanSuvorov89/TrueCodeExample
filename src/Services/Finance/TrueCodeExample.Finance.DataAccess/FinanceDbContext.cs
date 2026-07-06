@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using TrueCodeExample.Finance.Domain.Entities;
+using TrueCodeExample.Finance.DataAccess.Entities;
 
 namespace TrueCodeExample.Finance.DataAccess;
 
 public class FinanceDbContext(DbContextOptions<FinanceDbContext> options) : DbContext(options)
 {
-    public DbSet<Currency> Currencies => Set<Currency>();
+    public DbSet<CurrencyEntity> Currencies => Set<CurrencyEntity>();
 
-    public DbSet<FavoriteCurrency> FavoriteCurrencies => Set<FavoriteCurrency>();
+    public DbSet<FavoriteCurrencyEntity> FavoriteCurrencies => Set<FavoriteCurrencyEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,13 +1,12 @@
 using Mediator;
-using TrueCodeExample.Finance.Application.Abstractions;
 using TrueCodeExample.Finance.Domain.Entities;
 using TrueCodeExample.Finance.Domain.Exceptions;
 
 namespace TrueCodeExample.Finance.Application.Features.AddFavorite;
 
 public sealed class AddFavoriteCurrencyCommandHandler(
-    ICurrencyRepository currencies,
-    IFavoriteCurrencyRepository favorites)
+    ICurrencyByCharCodeReader currencies,
+    IFavoriteCurrencyWriter favorites)
     : IRequestHandler<AddFavoriteCurrencyCommand>
 {
     public async ValueTask<Unit> Handle(AddFavoriteCurrencyCommand request, CancellationToken cancellationToken)

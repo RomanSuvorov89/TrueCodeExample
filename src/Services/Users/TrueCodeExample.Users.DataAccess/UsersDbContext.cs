@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using TrueCodeExample.Users.Domain.Entities;
+using TrueCodeExample.Users.DataAccess.Entities;
 
 namespace TrueCodeExample.Users.DataAccess;
 
 public class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContext(options)
 {
-    public DbSet<User> Users => Set<User>();
+    public DbSet<UserEntity> Users => Set<UserEntity>();
 
-    public DbSet<RevokedToken> RevokedTokens => Set<RevokedToken>();
+    public DbSet<RefreshTokenEntity> RefreshTokens => Set<RefreshTokenEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
