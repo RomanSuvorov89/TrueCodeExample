@@ -1,0 +1,7 @@
+﻿services:
+  truecodeexample.api:
+    image: truecodeexample.api
+    build:
+      context: .
+      dockerfile: TrueCodeExample.Api/Dockerfile
+

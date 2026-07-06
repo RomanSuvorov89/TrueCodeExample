@@ -1,0 +1,12 @@
+Logging:
+  LogLevel:
+    Default: Information
+    Microsoft.AspNetCore: Warning
+
+Jwt:
+  Issuer: TrueCode
+  Audience: TrueCodeClients
+  SecretKey: TrueCodeSuperSecretKeyForJwtAuth1234567890
+  ExpirationMinutes: 60
+
+AllowedHosts: "*"

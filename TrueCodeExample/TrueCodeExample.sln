@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueCodeExample.Api", "TrueCodeExample.Api\TrueCodeExample.Api.csproj", "{999DD00E-022E-444B-A743-E8049F22EF08}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CF803DBF-0F48-459E-82C5-0716C43E9774}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{999DD00E-022E-444B-A743-E8049F22EF08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{999DD00E-022E-444B-A743-E8049F22EF08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{999DD00E-022E-444B-A743-E8049F22EF08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{999DD00E-022E-444B-A743-E8049F22EF08}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
