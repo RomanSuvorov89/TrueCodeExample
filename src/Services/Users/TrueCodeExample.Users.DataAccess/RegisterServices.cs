@@ -21,6 +21,9 @@ public static class RegisterServices
 
         services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(connectionString));
 
+        services.AddHealthChecks()
+            .AddDbContextCheck<UsersDbContext>();
+
         services.AddScoped<UserRepository>();
         services.AddScoped<IRegisterUserStore>(sp => sp.GetRequiredService<UserRepository>());
         services.AddScoped<ILoginUserStore>(sp => sp.GetRequiredService<UserRepository>());
