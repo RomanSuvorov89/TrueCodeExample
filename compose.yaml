@@ -8,6 +8,13 @@
 x-common-seq: &common-seq
   Seq__ServerUrl: http://seq:5341
 
+x-api-healthcheck: &api-healthcheck
+  test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+  interval: 10s
+  timeout: 5s
+  retries: 5
+  start_period: 20s
+
 services:
   seq:
     image: datalust/seq:2024.3
@@ -64,6 +71,7 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__UsersDb: Host=postgres;Port=5432;Database=truecode_users;Username=postgres;Password=postgres
       <<: [*common-jwt, *common-seq]
+    healthcheck: *api-healthcheck
     depends_on:
       postgres:
         condition: service_healthy
@@ -84,6 +92,7 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__FinanceDb: Host=postgres;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres
       <<: [*common-jwt, *common-seq]
+    healthcheck: *api-healthcheck
     depends_on:
       postgres:
         condition: service_healthy
@@ -96,12 +105,12 @@ services:
   currency-worker:
     build:
       context: .
-      dockerfile: src/Services/CurrencyWorker/TrueCodeExample.CurrencyWorker/Dockerfile
+      dockerfile: src/Services/Finance/TrueCodeExample.Finance.CurrencyWorker/Dockerfile
     environment:
       DOTNET_ENVIRONMENT: Production
       ConnectionStrings__FinanceDb: Host=postgres;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres
       CurrencyWorker__SyncIntervalMinutes: 60
-      CurrencyWorker__CbrBaseUrl: http://www.cbr.ru
+      Cbr__BaseUrl: http://www.cbr.ru
       <<: *common-seq
     depends_on:
       postgres:
@@ -122,13 +131,14 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
       <<: *common-seq
+    healthcheck: *api-healthcheck
     depends_on:
       seq:
         condition: service_started
       users-api:
-        condition: service_started
+        condition: service_healthy
       finance-api:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:

@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Moq;
-using TrueCodeExample.Finance.Application.Features.UpsertCurrencies;
+using TrueCodeExample.Finance.Application.Integration.UpsertCurrencies;
 using TrueCodeExample.Finance.Domain.Entities;
 using TrueCodeExample.Finance.Tests.Helpers;
 

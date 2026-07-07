@@ -5,7 +5,7 @@ using TrueCodeExample.Finance.Application.Features.AddFavorite;
 using TrueCodeExample.Finance.Application.Features.GetCurrencies;
 using TrueCodeExample.Finance.Application.Features.GetRates;
 using TrueCodeExample.Finance.Application.Features.RemoveFavorite;
-using TrueCodeExample.Finance.Application.Features.UpsertCurrencies;
+using TrueCodeExample.Finance.Application.Integration.UpsertCurrencies;
 using TrueCodeExample.Finance.DataAccess.Repositories;
 
 namespace TrueCodeExample.Finance.DataAccess;
@@ -20,6 +20,9 @@ public static class RegisterServices
             ?? throw new InvalidOperationException($"Connection string '{ConnectionStringName}' is missing.");
 
         services.AddDbContext<FinanceDbContext>(options => options.UseNpgsql(connectionString));
+
+        services.AddHealthChecks()
+            .AddDbContextCheck<FinanceDbContext>();
 
         services.AddScoped<CurrencyRepository>();
         services.AddScoped<ICurrencyUpsertStore>(sp => sp.GetRequiredService<CurrencyRepository>());

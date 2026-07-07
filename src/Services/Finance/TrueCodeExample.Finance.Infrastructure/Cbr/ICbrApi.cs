@@ -1,6 +1,6 @@
 using Refit;
 
-namespace TrueCodeExample.CurrencyWorker.Cbr;
+namespace TrueCodeExample.Finance.Infrastructure.Cbr;
 
 public interface ICbrApi
 {

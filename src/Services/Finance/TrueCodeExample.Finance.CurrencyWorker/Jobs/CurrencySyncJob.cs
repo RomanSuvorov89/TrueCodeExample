@@ -1,14 +1,14 @@
 using Mediator;
 using Quartz;
-using TrueCodeExample.CurrencyWorker.Cbr;
-using TrueCodeExample.Finance.Application.Features.UpsertCurrencies;
+using TrueCodeExample.Finance.Application.Integration.UpsertCurrencies;
+using TrueCodeExample.Finance.Infrastructure.Cbr;
 
-namespace TrueCodeExample.CurrencyWorker.Jobs;
+namespace TrueCodeExample.Finance.CurrencyWorker.Jobs;
 
 [DisallowConcurrentExecution]
 public sealed class CurrencySyncJob(
     IServiceScopeFactory scopeFactory,
-    ICbrApi cbrApi,
+    ICbrCurrencyProvider cbrCurrencyProvider,
     ILogger<CurrencySyncJob> logger) : IJob
 {
     public async Task Execute(IJobExecutionContext context)
@@ -17,15 +17,13 @@ public sealed class CurrencySyncJob(
 
         try
         {
-            var response = await cbrApi.GetDailyCurrenciesAsync(cancellationToken);
-            var valCurs = await CbrCurrencyMapper.ParseAsync(response, cancellationToken);
-            var currencies = CbrCurrencyMapper.ToCurrencyData(valCurs);
+            var currencies = await cbrCurrencyProvider.GetDailyCurrenciesAsync(cancellationToken);
 
             using var scope = scopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
             await mediator.Send(new UpsertCurrenciesCommand(currencies), cancellationToken);
 
-            logger.LogInformation("Synced {Count} currencies from CBR (date {Date})", currencies.Count, valCurs.Date);
+            logger.LogInformation("Synced {Count} currencies from CBR", currencies.Count);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {

@@ -1,7 +1,7 @@
 using Mediator;
 using TrueCodeExample.Finance.Domain.Entities;
 
-namespace TrueCodeExample.Finance.Application.Features.UpsertCurrencies;
+namespace TrueCodeExample.Finance.Application.Integration.UpsertCurrencies;
 
 public sealed class UpsertCurrenciesCommandHandler(ICurrencyUpsertStore currencies)
     : IRequestHandler<UpsertCurrenciesCommand>

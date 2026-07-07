@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TrueCodeExample.Finance.Application.Features.AddFavorite;
 using TrueCodeExample.Finance.Application.Features.GetCurrencies;
 using TrueCodeExample.Finance.Application.Features.GetRates;
-using TrueCodeExample.Finance.Application.Features.UpsertCurrencies;
+using TrueCodeExample.Finance.Application.Integration.UpsertCurrencies;
 using TrueCodeExample.Finance.DataAccess.Entities;
 using TrueCodeExample.Finance.Domain.Entities;
 
@@ -19,7 +19,10 @@ public sealed class CurrencyRepository(FinanceDbContext dbContext)
 
     public async Task<IReadOnlyList<Currency>> GetByIdsAsync(IReadOnlyCollection<Guid> ids, CancellationToken cancellationToken)
     {
-        var entities = await dbContext.Currencies.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+        var entities = await dbContext.Currencies
+            .AsNoTracking()
+            .Where(x => ids.Contains(x.Id))
+            .ToListAsync(cancellationToken);
         return entities.Select(x => x.ToDomain()).ToList();
     }
 

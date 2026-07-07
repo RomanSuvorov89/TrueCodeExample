@@ -9,15 +9,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
-    <PackageReference Include="Refit" Version="8.0.0" />
-    <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\TrueCodeExample.Common\TrueCodeExample.Common.csproj" />
-    <ProjectReference Include="..\..\Finance\TrueCodeExample.Finance.Application\TrueCodeExample.Finance.Application.csproj" />
-    <ProjectReference Include="..\..\Finance\TrueCodeExample.Finance.DataAccess\TrueCodeExample.Finance.DataAccess.csproj" />
+    <ProjectReference Include="..\TrueCodeExample.Finance.Application\TrueCodeExample.Finance.Application.csproj" />
+    <ProjectReference Include="..\TrueCodeExample.Finance.DataAccess\TrueCodeExample.Finance.DataAccess.csproj" />
+    <ProjectReference Include="..\TrueCodeExample.Finance.Infrastructure\TrueCodeExample.Finance.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

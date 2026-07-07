@@ -11,6 +11,8 @@ Serilog:
 Seq:
   ServerUrl: http://seq:5341
 
+Cbr:
+  BaseUrl: http://www.cbr.ru
+
 CurrencyWorker:
   SyncIntervalMinutes: 60
-  CbrBaseUrl: http://www.cbr.ru

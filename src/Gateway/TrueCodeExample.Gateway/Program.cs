@@ -1,5 +1,6 @@
 using Serilog;
 using TrueCodeExample.Common.Configuration;
+using TrueCodeExample.Common.Health;
 using TrueCodeExample.Common.Logging;
 
 try
@@ -11,10 +12,12 @@ try
 
     builder.Services.AddReverseProxy()
         .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    builder.Services.AddHealthChecks();
 
     var app = builder.Build();
 
     app.UseSerilogRequestLogging();
+    app.MapHealthChecksEndpoint();
     app.MapReverseProxy();
 
     app.Run();

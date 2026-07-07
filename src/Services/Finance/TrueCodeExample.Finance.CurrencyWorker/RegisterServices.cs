@@ -1,24 +1,15 @@
 using Microsoft.Extensions.Options;
 using Quartz;
-using Refit;
-using TrueCodeExample.CurrencyWorker.Cbr;
-using TrueCodeExample.CurrencyWorker.Jobs;
-using TrueCodeExample.CurrencyWorker.Options;
+using TrueCodeExample.Finance.CurrencyWorker.Jobs;
+using TrueCodeExample.Finance.CurrencyWorker.Options;
 
-namespace TrueCodeExample.CurrencyWorker;
+namespace TrueCodeExample.Finance.CurrencyWorker;
 
 public static class RegisterServices
 {
     public static IServiceCollection AddCurrencyWorker(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<CurrencyWorkerOptions>(configuration.GetSection(CurrencyWorkerOptions.SectionName));
-
-        services.AddRefitClient<ICbrApi>()
-            .ConfigureHttpClient((sp, client) =>
-            {
-                var options = sp.GetRequiredService<IOptions<CurrencyWorkerOptions>>().Value;
-                client.BaseAddress = new Uri(options.CbrBaseUrl);
-            });
 
         var workerOptions = configuration.GetSection(CurrencyWorkerOptions.SectionName).Get<CurrencyWorkerOptions>()
             ?? new CurrencyWorkerOptions();

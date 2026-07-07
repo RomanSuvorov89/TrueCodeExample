@@ -2,9 +2,10 @@ using System.Text;
 using Serilog;
 using TrueCodeExample.Common.Configuration;
 using TrueCodeExample.Common.Logging;
-using TrueCodeExample.CurrencyWorker;
 using TrueCodeExample.Finance.Application;
+using TrueCodeExample.Finance.CurrencyWorker;
 using TrueCodeExample.Finance.DataAccess;
+using TrueCodeExample.Finance.Infrastructure;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -17,6 +18,7 @@ try
 
     builder.Services.AddFinanceApplication();
     builder.Services.AddFinanceDataAccess(builder.Configuration);
+    builder.Services.AddFinanceInfrastructure(builder.Configuration);
     builder.Services.AddCurrencyWorker(builder.Configuration);
 
     var host = builder.Build();
@@ -24,7 +26,7 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Currency worker terminated unexpectedly");
+    Log.Fatal(ex, "Finance currency worker terminated unexpectedly");
     throw;
 }
 finally

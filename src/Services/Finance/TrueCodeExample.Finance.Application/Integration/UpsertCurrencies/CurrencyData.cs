@@ -1,4 +1,4 @@
-namespace TrueCodeExample.Finance.Application.Features.UpsertCurrencies;
+namespace TrueCodeExample.Finance.Application.Integration.UpsertCurrencies;
 
 public sealed record CurrencyData(
     string CharCode,

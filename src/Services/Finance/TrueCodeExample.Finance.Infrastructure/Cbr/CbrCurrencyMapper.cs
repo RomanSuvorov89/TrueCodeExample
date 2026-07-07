@@ -1,9 +1,9 @@
 using System.Globalization;
 using System.Text;
 using System.Xml.Serialization;
-using TrueCodeExample.Finance.Application.Features.UpsertCurrencies;
+using TrueCodeExample.Finance.Application.Integration.UpsertCurrencies;
 
-namespace TrueCodeExample.CurrencyWorker.Cbr;
+namespace TrueCodeExample.Finance.Infrastructure.Cbr;
 
 public static class CbrCurrencyMapper
 {

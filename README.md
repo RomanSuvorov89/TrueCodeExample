@@ -18,15 +18,15 @@ Client → Gateway (YARP) → Users.Api / Finance.Api
                 ↓
            PostgreSQL (UsersDb, FinanceDb)
 
-CurrencyWorker → ЦБ РФ (XML) → FinanceDb
+Finance.CurrencyWorker → Finance.Infrastructure (CBR) → ЦБ РФ (XML) → FinanceDb
 MigrationService → Migrate() для обеих БД (one-shot при старте)
 ```
 
 | Сервис | Назначение |
 |--------|------------|
 | **Users.Api** | Регистрация, логин, refresh/logout (JWT + refresh tokens в Postgres) |
-| **Finance.Api** | Список валют, курсы по избранному, управление favorites |
-| **CurrencyWorker** | Периодическая синхронизация курсов с cbr.ru |
+| **Finance.Api** | Список валют (публичный), курсы по избранному, управление favorites |
+| **Finance.CurrencyWorker** | Периодическая синхронизация курсов с cbr.ru (Quartz) |
 | **MigrationService** | Применение EF Core миграций перед стартом API |
 | **Gateway** | Единая точка входа, проброс `Authorization` |
 
@@ -42,7 +42,7 @@ docker compose up --build
 1. Postgres (healthcheck) и **Seq** (сбор логов)
 2. `migration-service` — накатывает схему, завершается
 3. `users-api`, `finance-api`, `currency-worker`
-4. `gateway`
+4. `gateway` (ждёт healthcheck API)
 
 ### Порты
 
@@ -61,7 +61,7 @@ Swagger доступен в Development при локальном запуске
 
 Все сервисы пишут логи в **Console** (видны в `docker compose logs`) и в **Seq** (`http://localhost:8081`).
 
-Фильтрация в Seq UI по свойству `Application` (имя сервиса): `TrueCodeExample.Users.Api`, `TrueCodeExample.Finance.Api`, `TrueCodeExample.Gateway`, `TrueCodeExample.CurrencyWorker`, `TrueCodeExample.MigrationService`.
+Фильтрация в Seq UI по свойству `Application` (имя сервиса): `TrueCodeExample.Users.Api`, `TrueCodeExample.Finance.Api`, `TrueCodeExample.Gateway`, `TrueCodeExample.Finance.CurrencyWorker`, `TrueCodeExample.MigrationService`.
 
 Локально без Docker: поднимите Seq отдельно (`docker compose up seq -d`) или уберите `Seq:ServerUrl` из `appsettings.Development.yaml`.
 
@@ -115,83 +115,6 @@ docker compose run --rm migration-service
 
 Курс в рублях за единицу: `Value / Nominal`.
 
-### Проверка работы (PowerShell)
-
-После `docker compose up --build` дождитесь синка валют (в логах `currency-worker`: `Synced N currencies from CBR`). Затем выполните в PowerShell:
-
-```powershell
-$baseUrl = "http://localhost:5000"
-$name = "reviewer$((Get-Random))"
-
-Write-Host "=== Register ===" -ForegroundColor Cyan
-$reg = Invoke-RestMethod -Uri "$baseUrl/users/auth/register" `
-    -Method POST -ContentType "application/json" `
-    -Body (@{ name = $name; password = "secret12" } | ConvertTo-Json)
-$headers = @{ Authorization = "Bearer $($reg.accessToken)" }
-Write-Host "User: $name"
-
-Write-Host "`n=== Login ===" -ForegroundColor Cyan
-$login = Invoke-RestMethod -Uri "$baseUrl/users/auth/login" `
-    -Method POST -ContentType "application/json" `
-    -Body (@{ name = $name; password = "secret12" } | ConvertTo-Json)
-Write-Host "Login OK, userId=$($login.userId)"
-
-Write-Host "`n=== Currencies ===" -ForegroundColor Cyan
-$currencies = Invoke-RestMethod -Uri "$baseUrl/finance/currencies" -Headers $headers
-Write-Host "Total: $($currencies.Count)"
-$currencies | Select-Object -First 3 | Format-Table charCode, name, nominal, value
-
-Write-Host "=== Add USD to favorites ===" -ForegroundColor Cyan
-$fav = Invoke-WebRequest -Uri "$baseUrl/finance/favorites/USD" -Method POST -Headers $headers -UseBasicParsing
-Write-Host "Status: $($fav.StatusCode)"
-
-Write-Host "`n=== Rates (favorites) ===" -ForegroundColor Cyan
-$rates = Invoke-RestMethod -Uri "$baseUrl/finance/rates" -Headers $headers
-$rates | Format-Table charCode, name, nominal, value
-
-Write-Host "=== Refresh token ===" -ForegroundColor Cyan
-$refreshed = Invoke-RestMethod -Uri "$baseUrl/users/auth/refresh" `
-    -Method POST -ContentType "application/json" `
-    -Body (@{ refreshToken = $reg.refreshToken } | ConvertTo-Json)
-Write-Host "Refresh OK"
-
-Write-Host "`n=== Logout ===" -ForegroundColor Cyan
-$logout = Invoke-WebRequest -Uri "$baseUrl/users/auth/logout" -Method POST `
-    -Headers @{ Authorization = "Bearer $($refreshed.accessToken)" } -UseBasicParsing
-Write-Host "Status: $($logout.StatusCode)"
-
-Write-Host "`n=== Old refresh token (expect 401) ===" -ForegroundColor Cyan
-try {
-    Invoke-WebRequest -Uri "$baseUrl/users/auth/refresh" -Method POST `
-        -ContentType "application/json" `
-        -Body (@{ refreshToken = $reg.refreshToken } | ConvertTo-Json) -UseBasicParsing
-} catch {
-    Write-Host "Status: $($_.Exception.Response.StatusCode.value__)"
-}
-
-Write-Host "`n=== Duplicate register (expect 409) ===" -ForegroundColor Cyan
-try {
-    Invoke-WebRequest -Uri "$baseUrl/users/auth/register" -Method POST `
-        -ContentType "application/json" `
-        -Body (@{ name = $name; password = "secret12" } | ConvertTo-Json) -UseBasicParsing
-} catch {
-    Write-Host "Status: $($_.Exception.Response.StatusCode.value__)"
-}
-
-Write-Host "`nDone." -ForegroundColor Green
-```
-
-Ожидаемые результаты:
-
-| Шаг | HTTP-код |
-|-----|----------|
-| Register / Login / Currencies / Rates / Refresh | 200 |
-| Add favorite / Logout | 204 |
-| Повторный refresh старым токеном | 401 |
-| Повторная регистрация | 409 |
-
-> Кириллица в названиях валют в консоли может отображаться некорректно — это кодировка терминала; в JSON данные приходят в UTF-8.
-
 ### Пример сценария (curl, bash)
 
 ```bash
@@ -234,7 +157,7 @@ dotnet run --project src/Services/MigrationService/TrueCodeExample.MigrationServ
 ```bash
 dotnet run --project src/Services/Users/TrueCodeExample.Users.Api
 dotnet run --project src/Services/Finance/TrueCodeExample.Finance.Api
-dotnet run --project src/Services/CurrencyWorker/TrueCodeExample.CurrencyWorker
+dotnet run --project src/Services/Finance/TrueCodeExample.Finance.CurrencyWorker
 dotnet run --project src/Gateway/TrueCodeExample.Gateway
 ```
 
@@ -257,8 +180,7 @@ src/
   Gateway/TrueCodeExample.Gateway/
   Services/
     Users/                         # Domain → Application → DataAccess → Infrastructure → Api
-    Finance/
-    CurrencyWorker/
+    Finance/                       # Domain → Application → DataAccess → Infrastructure → Api → CurrencyWorker
     MigrationService/
 tests/
   TrueCodeExample.Users.Tests/
@@ -274,3 +196,5 @@ compose.yaml
 - Логирование: Serilog (`Serilog` + `Seq:ServerUrl` в конфиге)
 - Секреты и connection strings — через переменные окружения (`ConnectionStrings__UsersDb`, `Jwt__SecretKey`, `Seq__ServerUrl`, …)
 - JWT: access token 15 мин, refresh token 7 дней, ротация при refresh, logout отзывает refresh в БД
+- Health: `GET /health` на Gateway, Users.Api и Finance.Api (Users/Finance проверяют Postgres через `AddDbContextCheck` в DataAccess)
+- DataAccess: read-only запросы перед `Update`/`Remove` используют `AsNoTracking()`, чтобы избежать конфликтов EF tracking

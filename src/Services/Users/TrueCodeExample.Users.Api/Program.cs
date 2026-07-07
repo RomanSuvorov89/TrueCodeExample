@@ -1,6 +1,7 @@
 using Serilog;
 using TrueCodeExample.Common.Authentication;
 using TrueCodeExample.Common.Configuration;
+using TrueCodeExample.Common.Health;
 using TrueCodeExample.Common.Logging;
 using TrueCodeExample.Common.Middleware;
 using TrueCodeExample.Common.Swagger;
@@ -36,6 +37,7 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
+    app.MapHealthChecksEndpoint();
     app.MapUsersEndpoints();
 
     app.Run();

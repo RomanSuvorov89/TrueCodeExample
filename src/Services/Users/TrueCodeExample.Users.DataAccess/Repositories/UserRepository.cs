@@ -15,13 +15,17 @@ public sealed class UserRepository(UsersDbContext dbContext)
 
     public async Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken)
     {
-        var entity = await dbContext.Users.SingleOrDefaultAsync(x => x.Name == name, cancellationToken);
+        var entity = await dbContext.Users
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Name == name, cancellationToken);
         return entity?.ToDomain();
     }
 
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        var entity = await dbContext.Users.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+        var entity = await dbContext.Users
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
         return entity?.ToDomain();
     }
 

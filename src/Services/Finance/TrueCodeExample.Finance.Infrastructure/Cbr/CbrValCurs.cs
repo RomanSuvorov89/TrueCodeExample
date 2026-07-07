@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace TrueCodeExample.CurrencyWorker.Cbr;
+namespace TrueCodeExample.Finance.Infrastructure.Cbr;
 
 [XmlRoot("ValCurs")]
 public sealed class CbrValCurs
