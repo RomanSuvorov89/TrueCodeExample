@@ -8,6 +8,8 @@ public sealed class RemoveFavoriteCurrencyCommandValidator : AbstractValidator<R
     {
         RuleFor(x => x.CharCode)
             .NotEmpty()
-            .MaximumLength(3);
+            .Length(3)
+            .Matches("^[A-Za-z]{3}$")
+            .WithMessage("CharCode must be a 3-letter ISO currency code.");
     }
 }

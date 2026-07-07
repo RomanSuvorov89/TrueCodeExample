@@ -108,7 +108,7 @@ docker compose run --rm migration-service
 
 | Метод | Путь | Auth |
 |-------|------|------|
-| GET | `/finance/currencies` | Bearer |
+| GET | `/finance/currencies` | — (публичный) |
 | GET | `/finance/rates` | Bearer |
 | POST | `/finance/favorites/{charCode}` | Bearer |
 | DELETE | `/finance/favorites/{charCode}` | Bearer |
@@ -123,9 +123,8 @@ curl -X POST http://localhost:5000/users/auth/register \
   -H "Content-Type: application/json" \
   -d '{"name":"alice","password":"secret12"}'
 
-# Список валют (после синка worker'а)
-curl http://localhost:5000/finance/currencies \
-  -H "Authorization: Bearer <accessToken>"
+# Список валют (публичный, после синка worker'а)
+curl http://localhost:5000/finance/currencies
 
 # Добавить USD в избранное
 curl -X POST http://localhost:5000/finance/favorites/USD \
@@ -169,8 +168,11 @@ Connection strings и `Jwt__SecretKey` задаются в `Properties/launchSet
 dotnet test
 ```
 
-- `tests/TrueCodeExample.Users.Tests` — хендлеры Users
-- `tests/TrueCodeExample.Finance.Tests` — хендлеры Finance
+- `tests/TrueCodeExample.Users.Tests` — unit-тесты хендлеров Users
+- `tests/TrueCodeExample.Finance.Tests` — unit-тесты хендлеров Finance
+- `tests/TrueCodeExample.Integration.Tests` — API + Postgres (Testcontainers, нужен Docker)
+
+CI: `.github/workflows/ci.yml` (build + unit + integration tests).
 
 ## Структура решения
 
@@ -185,6 +187,7 @@ src/
 tests/
   TrueCodeExample.Users.Tests/
   TrueCodeExample.Finance.Tests/
+  TrueCodeExample.Integration.Tests/
 docker/
   postgres/init-databases.sql
 compose.yaml
@@ -195,6 +198,6 @@ compose.yaml
 - Формат: YAML (`appsettings.yaml` + `appsettings.{Environment}.yaml`)
 - Логирование: Serilog (`Serilog` + `Seq:ServerUrl` в конфиге)
 - Секреты и connection strings — через переменные окружения (`ConnectionStrings__UsersDb`, `Jwt__SecretKey`, `Seq__ServerUrl`, …)
-- JWT: access token 15 мин, refresh token 7 дней, ротация при refresh, logout отзывает refresh в БД
-- Health: `GET /health` на Gateway, Users.Api и Finance.Api (Users/Finance проверяют Postgres через `AddDbContextCheck` в DataAccess)
-- DataAccess: read-only запросы перед `Update`/`Remove` используют `AsNoTracking()`, чтобы избежать конфликтов EF tracking
+- JWT: access token 15 мин, refresh token 7 дней, ротация при refresh, logout отзывает refresh в БД (access token действует до истечения TTL)
+- Health: `GET /health` на Gateway, Users.Api, Finance.Api и CurrencyWorker
+- DataAccess: read-only запросы перед `Update`/`Remove` используют `AsNoTracking()`

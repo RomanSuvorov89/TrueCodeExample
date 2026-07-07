@@ -33,7 +33,7 @@ try
         app.UseSwaggerUI();
     }
 
-    app.UseTrueCodeExceptionHandling();
+    app.UseExceptionHandling();
     app.UseAuthentication();
     app.UseAuthorization();
 
@@ -51,3 +51,5 @@ finally
 {
     await Log.CloseAndFlushAsync();
 }
+
+public partial class UsersApiProgram;

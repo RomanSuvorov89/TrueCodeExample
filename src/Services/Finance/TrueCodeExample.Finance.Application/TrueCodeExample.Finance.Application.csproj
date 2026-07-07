@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\TrueCodeExample.Common\TrueCodeExample.Common.csproj" />
         <ProjectReference Include="..\TrueCodeExample.Finance.Domain\TrueCodeExample.Finance.Domain.csproj" />
     </ItemGroup>
 

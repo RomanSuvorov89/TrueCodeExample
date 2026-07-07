@@ -14,15 +14,21 @@ public static class RegisterServices
 {
     private const string ConnectionStringName = "FinanceDb";
 
-    public static IServiceCollection AddFinanceDataAccess(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddFinanceDataAccess(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        bool includeHealthChecks = true)
     {
         var connectionString = configuration.GetConnectionString(ConnectionStringName)
             ?? throw new InvalidOperationException($"Connection string '{ConnectionStringName}' is missing.");
 
         services.AddDbContext<FinanceDbContext>(options => options.UseNpgsql(connectionString));
 
-        services.AddHealthChecks()
-            .AddDbContextCheck<FinanceDbContext>();
+        if (includeHealthChecks)
+        {
+            services.AddHealthChecks()
+                .AddDbContextCheck<FinanceDbContext>();
+        }
 
         services.AddScoped<CurrencyRepository>();
         services.AddScoped<ICurrencyUpsertStore>(sp => sp.GetRequiredService<CurrencyRepository>());

@@ -1,6 +1,7 @@
 using Mediator;
 using Quartz;
 using TrueCodeExample.Finance.Application.Integration.UpsertCurrencies;
+using TrueCodeExample.Finance.CurrencyWorker.Health;
 using TrueCodeExample.Finance.Infrastructure.Cbr;
 
 namespace TrueCodeExample.Finance.CurrencyWorker.Jobs;
@@ -9,6 +10,7 @@ namespace TrueCodeExample.Finance.CurrencyWorker.Jobs;
 public sealed class CurrencySyncJob(
     IServiceScopeFactory scopeFactory,
     ICbrCurrencyProvider cbrCurrencyProvider,
+    ICurrencySyncState syncState,
     ILogger<CurrencySyncJob> logger) : IJob
 {
     public async Task Execute(IJobExecutionContext context)
@@ -23,6 +25,7 @@ public sealed class CurrencySyncJob(
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
             await mediator.Send(new UpsertCurrenciesCommand(currencies), cancellationToken);
 
+            syncState.RecordSuccess(currencies.Count, DateTime.UtcNow);
             logger.LogInformation("Synced {Count} currencies from CBR", currencies.Count);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

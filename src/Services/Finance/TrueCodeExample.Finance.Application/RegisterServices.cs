@@ -1,7 +1,7 @@
 using FluentValidation;
 using Mediator;
 using Microsoft.Extensions.DependencyInjection;
-using TrueCodeExample.Finance.Application.Behaviors;
+using TrueCodeExample.Common.Behaviors;
 
 namespace TrueCodeExample.Finance.Application;
 

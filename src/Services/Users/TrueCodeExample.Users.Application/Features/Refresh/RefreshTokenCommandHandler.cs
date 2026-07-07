@@ -25,10 +25,10 @@ public sealed class RefreshTokenCommandHandler(
         var user = await users.GetByIdAsync(stored.UserId, cancellationToken)
                    ?? throw new InvalidRefreshTokenException();
 
-        stored.Revoke();
-        await refreshTokens.UpdateAsync(stored, cancellationToken);
-        await refreshTokens.SaveChangesAsync(cancellationToken);
+        var pair = tokenIssuer.CreateTokenPair(user);
+        var rotated = await refreshTokens.TryRotateAsync(stored.Id, pair.RefreshToken, cancellationToken);
+        if (!rotated) throw new InvalidRefreshTokenException();
 
-        return await tokenIssuer.IssueAsync(user, cancellationToken);
+        return pair.Response;
     }
 }

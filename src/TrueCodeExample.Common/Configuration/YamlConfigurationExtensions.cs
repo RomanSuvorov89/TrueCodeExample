@@ -20,12 +20,18 @@ public static class YamlConfigurationExtensions
 
     private static void ConfigureYaml(IConfigurationBuilder configuration, string contentRoot, string environment)
     {
-        configuration.Sources.Clear();
+        var preservedSources = configuration.Sources.ToList();
 
+        configuration.Sources.Clear();
         configuration
             .SetBasePath(contentRoot)
             .AddYamlFile("appsettings.yaml", optional: false, reloadOnChange: true)
             .AddYamlFile($"appsettings.{environment}.yaml", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
+
+        foreach (var source in preservedSources)
+        {
+            configuration.Sources.Add(source);
+        }
     }
 }

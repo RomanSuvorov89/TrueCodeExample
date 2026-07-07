@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore TrueCodeExample.sln
+
+      - name: Build
+        run: dotnet build TrueCodeExample.sln --no-restore -c Release
+
+      - name: Unit tests
+        run: dotnet test TrueCodeExample.sln --no-build -c Release --filter "FullyQualifiedName!~Integration.Tests"
+
+      - name: Integration tests
+        run: dotnet test tests/TrueCodeExample.Integration.Tests/TrueCodeExample.Integration.Tests.csproj --no-build -c Release

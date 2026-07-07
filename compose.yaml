@@ -106,12 +106,17 @@ services:
     build:
       context: .
       dockerfile: src/Services/Finance/TrueCodeExample.Finance.CurrencyWorker/Dockerfile
+    ports:
+      - "5300:8080"
     environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
       DOTNET_ENVIRONMENT: Production
       ConnectionStrings__FinanceDb: Host=postgres;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres
       CurrencyWorker__SyncIntervalMinutes: 60
       Cbr__BaseUrl: http://www.cbr.ru
       <<: *common-seq
+    healthcheck: *api-healthcheck
     depends_on:
       postgres:
         condition: service_healthy

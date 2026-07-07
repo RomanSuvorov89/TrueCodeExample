@@ -1,7 +1,7 @@
 using FluentValidation;
 using Mediator;
 using Microsoft.Extensions.DependencyInjection;
-using TrueCodeExample.Users.Application.Behaviors;
+using TrueCodeExample.Common.Behaviors;
 using TrueCodeExample.Users.Application.Services.AuthTokenIssuer;
 
 namespace TrueCodeExample.Users.Application;

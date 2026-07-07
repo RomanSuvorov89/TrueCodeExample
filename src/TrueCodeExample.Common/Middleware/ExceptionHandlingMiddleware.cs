@@ -79,6 +79,6 @@ public sealed class ProblemResponse
 
 public static class ExceptionHandlingMiddlewareExtensions
 {
-    public static IApplicationBuilder UseTrueCodeExceptionHandling(this IApplicationBuilder app)
+    public static IApplicationBuilder UseExceptionHandling(this IApplicationBuilder app)
         => app.UseMiddleware<ExceptionHandlingMiddleware>();
 }

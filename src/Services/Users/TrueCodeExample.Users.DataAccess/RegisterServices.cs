@@ -14,15 +14,21 @@ public static class RegisterServices
 {
     private const string ConnectionStringName = "UsersDb";
 
-    public static IServiceCollection AddUsersDataAccess(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddUsersDataAccess(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        bool includeHealthChecks = true)
     {
         var connectionString = configuration.GetConnectionString(ConnectionStringName)
             ?? throw new InvalidOperationException($"Connection string '{ConnectionStringName}' is missing.");
 
         services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(connectionString));
 
-        services.AddHealthChecks()
-            .AddDbContextCheck<UsersDbContext>();
+        if (includeHealthChecks)
+        {
+            services.AddHealthChecks()
+                .AddDbContextCheck<UsersDbContext>();
+        }
 
         services.AddScoped<UserRepository>();
         services.AddScoped<IRegisterUserStore>(sp => sp.GetRequiredService<UserRepository>());
