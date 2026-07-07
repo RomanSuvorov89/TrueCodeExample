@@ -6,13 +6,13 @@ namespace TrueCodeExample.Common.Configuration;
 
 public static class YamlConfigurationExtensions
 {
-    public static WebApplicationBuilder AddTrueCodeYamlConfiguration(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddYamlConfiguration(this WebApplicationBuilder builder)
     {
         ConfigureYaml(builder.Configuration, builder.Environment.ContentRootPath, builder.Environment.EnvironmentName);
         return builder;
     }
 
-    public static HostApplicationBuilder AddTrueCodeYamlConfiguration(this HostApplicationBuilder builder)
+    public static HostApplicationBuilder AddYamlConfiguration(this HostApplicationBuilder builder)
     {
         ConfigureYaml(builder.Configuration, builder.Environment.ContentRootPath, builder.Environment.EnvironmentName);
         return builder;

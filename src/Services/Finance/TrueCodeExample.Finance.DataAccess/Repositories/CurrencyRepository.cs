@@ -13,7 +13,7 @@ public sealed class CurrencyRepository(FinanceDbContext dbContext)
 {
     public async Task<IReadOnlyList<Currency>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var entities = await dbContext.Currencies.ToListAsync(cancellationToken);
+        var entities = await dbContext.Currencies.AsNoTracking().ToListAsync(cancellationToken);
         return entities.Select(x => x.ToDomain()).ToList();
     }
 
@@ -25,7 +25,9 @@ public sealed class CurrencyRepository(FinanceDbContext dbContext)
 
     public async Task<Currency?> GetByCharCodeAsync(string charCode, CancellationToken cancellationToken)
     {
-        var entity = await dbContext.Currencies.SingleOrDefaultAsync(x => x.CharCode == charCode, cancellationToken);
+        var entity = await dbContext.Currencies
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.CharCode == charCode, cancellationToken);
         return entity?.ToDomain();
     }
 

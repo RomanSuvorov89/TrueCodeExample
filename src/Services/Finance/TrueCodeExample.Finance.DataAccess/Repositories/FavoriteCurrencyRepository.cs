@@ -12,13 +12,18 @@ public sealed class FavoriteCurrencyRepository(FinanceDbContext dbContext)
 {
     public async Task<IReadOnlyList<FavoriteCurrency>> GetByUserAsync(Guid userId, CancellationToken cancellationToken)
     {
-        var entities = await dbContext.FavoriteCurrencies.Where(x => x.UserId == userId).ToListAsync(cancellationToken);
+        var entities = await dbContext.FavoriteCurrencies
+            .AsNoTracking()
+            .Where(x => x.UserId == userId)
+            .ToListAsync(cancellationToken);
         return entities.Select(x => x.ToDomain()).ToList();
     }
 
     public async Task<FavoriteCurrency?> GetAsync(Guid userId, Guid currencyId, CancellationToken cancellationToken)
     {
-        var entity = await dbContext.FavoriteCurrencies.SingleOrDefaultAsync(x => x.UserId == userId && x.CurrencyId == currencyId, cancellationToken);
+        var entity = await dbContext.FavoriteCurrencies
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.UserId == userId && x.CurrencyId == currencyId, cancellationToken);
         return entity?.ToDomain();
     }
 

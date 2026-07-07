@@ -1,4 +1,6 @@
-Logging:
-  LogLevel:
+Serilog:
+  MinimumLevel:
     Default: Debug
-    Microsoft.Hosting.Lifetime: Information
+
+Seq:
+  ServerUrl: http://localhost:5341

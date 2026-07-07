@@ -1,14 +1,30 @@
+using Serilog;
 using TrueCodeExample.Common.Configuration;
+using TrueCodeExample.Common.Logging;
 
-var builder = WebApplication.CreateBuilder(args);
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
 
-builder.AddTrueCodeYamlConfiguration();
+    builder.AddYamlConfiguration();
+    builder.UseSerilog();
 
-builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    builder.Services.AddReverseProxy()
+        .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
-var app = builder.Build();
+    var app = builder.Build();
 
-app.MapReverseProxy();
+    app.UseSerilogRequestLogging();
+    app.MapReverseProxy();
 
-app.Run();
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Gateway terminated unexpectedly");
+    throw;
+}
+finally
+{
+    await Log.CloseAndFlushAsync();
+}

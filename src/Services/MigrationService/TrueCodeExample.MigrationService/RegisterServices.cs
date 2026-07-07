@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using TrueCodeExample.Finance.DataAccess;
 using TrueCodeExample.Users.DataAccess;
 

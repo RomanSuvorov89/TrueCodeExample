@@ -1,6 +1,4 @@
 using Mediator;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Quartz;
 using TrueCodeExample.CurrencyWorker.Cbr;
 using TrueCodeExample.Finance.Application.Features.UpsertCurrencies;

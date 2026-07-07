@@ -5,7 +5,21 @@
   Jwt__RefreshTokenDays: 7
   Jwt__SecretKey: docker-development-secret-key-change-me-please-32+
 
+x-common-seq: &common-seq
+  Seq__ServerUrl: http://seq:5341
+
 services:
+  seq:
+    image: datalust/seq:2024.3
+    environment:
+      ACCEPT_EULA: "Y"
+    ports:
+      - "5341:5341"
+      - "8081:80"
+    volumes:
+      - seq_data:/data
+    restart: unless-stopped
+
   postgres:
     image: postgres:16-alpine
     environment:
@@ -31,9 +45,12 @@ services:
       DOTNET_ENVIRONMENT: Production
       ConnectionStrings__UsersDb: Host=postgres;Port=5432;Database=truecode_users;Username=postgres;Password=postgres
       ConnectionStrings__FinanceDb: Host=postgres;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres
+      <<: *common-seq
     depends_on:
       postgres:
         condition: service_healthy
+      seq:
+        condition: service_started
     restart: "no"
 
   users-api:
@@ -46,10 +63,12 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__UsersDb: Host=postgres;Port=5432;Database=truecode_users;Username=postgres;Password=postgres
-      <<: *common-jwt
+      <<: [*common-jwt, *common-seq]
     depends_on:
       postgres:
         condition: service_healthy
+      seq:
+        condition: service_started
       migration-service:
         condition: service_completed_successfully
     restart: unless-stopped
@@ -64,10 +83,12 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__FinanceDb: Host=postgres;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres
-      <<: *common-jwt
+      <<: [*common-jwt, *common-seq]
     depends_on:
       postgres:
         condition: service_healthy
+      seq:
+        condition: service_started
       migration-service:
         condition: service_completed_successfully
     restart: unless-stopped
@@ -81,9 +102,12 @@ services:
       ConnectionStrings__FinanceDb: Host=postgres;Port=5432;Database=truecode_finance;Username=postgres;Password=postgres
       CurrencyWorker__SyncIntervalMinutes: 60
       CurrencyWorker__CbrBaseUrl: http://www.cbr.ru
+      <<: *common-seq
     depends_on:
       postgres:
         condition: service_healthy
+      seq:
+        condition: service_started
       migration-service:
         condition: service_completed_successfully
     restart: unless-stopped
@@ -97,7 +121,10 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
+      <<: *common-seq
     depends_on:
+      seq:
+        condition: service_started
       users-api:
         condition: service_started
       finance-api:
@@ -106,3 +133,4 @@ services:
 
 volumes:
   postgres_data:
+  seq_data:

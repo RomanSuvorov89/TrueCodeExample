@@ -1,7 +1,11 @@
-Logging:
-  LogLevel:
+Serilog:
+  MinimumLevel:
     Default: Debug
-    Microsoft.AspNetCore: Information
+    Override:
+      Microsoft.AspNetCore: Information
+
+Seq:
+  ServerUrl: http://localhost:5341
 
 ReverseProxy:
   Clusters:

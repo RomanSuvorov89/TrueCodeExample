@@ -3,7 +3,6 @@ using Mediator;
 using TrueCodeExample.Common.Security;
 using TrueCodeExample.Finance.Application.Features.GetCurrencies;
 using TrueCodeExample.Finance.Application.Features.AddFavorite;
-using TrueCodeExample.Finance.Application.Features.GetCurrencies;
 using TrueCodeExample.Finance.Application.Features.GetRates;
 using TrueCodeExample.Finance.Application.Features.RemoveFavorite;
 

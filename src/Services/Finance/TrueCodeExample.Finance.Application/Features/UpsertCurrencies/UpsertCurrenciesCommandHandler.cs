@@ -1,6 +1,5 @@
 using Mediator;
 using TrueCodeExample.Finance.Domain.Entities;
-using TrueCodeExample.Finance.Domain.Exceptions;
 
 namespace TrueCodeExample.Finance.Application.Features.UpsertCurrencies;
 

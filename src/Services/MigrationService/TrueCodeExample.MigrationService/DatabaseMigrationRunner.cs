@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TrueCodeExample.Finance.DataAccess;
 using TrueCodeExample.Users.DataAccess;
 

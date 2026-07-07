@@ -23,13 +23,16 @@ public sealed class RefreshTokenRepository(UsersDbContext dbContext) :
 
     public async Task<RefreshToken?> GetByHashAsync(string tokenHash, CancellationToken cancellationToken)
     {
-        var entity = await dbContext.RefreshTokens.SingleOrDefaultAsync(x => x.TokenHash == tokenHash, cancellationToken);
+        var entity = await dbContext.RefreshTokens
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.TokenHash == tokenHash, cancellationToken);
         return entity?.ToDomain();
     }
 
     public async Task<IReadOnlyList<RefreshToken>> GetActiveByUserAsync(Guid userId, CancellationToken cancellationToken)
     {
         var entities = await dbContext.RefreshTokens
+            .AsNoTracking()
             .Where(x => x.UserId == userId && x.RevokedAtUtc == null && x.ExpiresAtUtc > DateTime.UtcNow)
             .ToListAsync(cancellationToken);
 

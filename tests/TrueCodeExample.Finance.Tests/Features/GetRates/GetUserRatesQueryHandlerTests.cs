@@ -1,6 +1,5 @@
 using FluentAssertions;
 using Moq;
-using TrueCodeExample.Finance.Application.Features.GetCurrencies;
 using TrueCodeExample.Finance.Application.Features.GetRates;
 using TrueCodeExample.Finance.Domain.Entities;
 using TrueCodeExample.Finance.Tests.Helpers;
